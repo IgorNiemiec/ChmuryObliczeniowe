@@ -1,0 +1,17 @@
+FROM gcc AS builder
+
+WORKDIR /app
+COPY server.c .
+RUN gcc server.c -o server -static
+
+# Tworzenie katalogu na plik wyjściowy
+RUN mkdir -p /output
+ENV VERSION=1.0
+CMD ["/app/server"]
+
+# Etap 2: Serwowanie pliku przez Nginx
+FROM nginx
+COPY --from=builder /output/index.html /usr/share/nginx/html/index.html
+
+# Sprawdzanie działania
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 CMD curl -f http://localhost || exit 1
