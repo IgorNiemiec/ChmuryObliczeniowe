@@ -1,0 +1,9 @@
+FROM scratch
+
+WORKDIR /root/
+
+COPY server .
+
+EXPOSE 8080
+
+CMD ["/root/server"]
